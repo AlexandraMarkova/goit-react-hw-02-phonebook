@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Container from './components/Container/Container';
 import ContactForm from './components/ContactForm/ContactForm';
 import ContactList from './components/ContactList/ContactList';
+import Filter from './components/Filter/Filter';
 
 class App extends Component {
   state = {
@@ -25,7 +26,17 @@ class App extends Component {
     }));
   };
 
+  changeFilter = e => {
+    this.setState({ filter: e.currentTarget.value });
+  };
+
   render() {
+    const normalizeFilter = this.state.filter.toLowerCase();
+
+    const visibleContacts = this.state.contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizeFilter),
+    );
+
     return (
       <Container>
         <div>
@@ -33,8 +44,8 @@ class App extends Component {
           <ContactForm onSubmit={this.formSubmitHandler} />
 
           <h2>Contacts</h2>
-          {/* <Filter ... /> */}
-          <ContactList contacts={this.state.contacts} />
+          <Filter value={this.state.filter} onChange={this.changeFilter} />
+          <ContactList contacts={visibleContacts} />
         </div>
       </Container>
     );
